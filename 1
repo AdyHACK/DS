@@ -1,48 +1,49 @@
 import numpy as np
 import matplotlib.pyplot as mp
 
-a = np.linspace(-5, 5, 100)
-
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-def tanh(x):
+def tanhh(x):
     return np.tanh(x)
 
 def relu(x):
     return np.maximum(0, x)
 
-# Calculate outputs
-b_sig = sigmoid(a)
-b_tanh = tanh(a)
-b_relu = relu(a)
+x = np.linspace(-10, 10, 10)
 
-# -------- Sigmoid Plot --------
-mp.figure()
-mp.plot(a, b_sig, color="blue")
-mp.title("Sigmoid Function")
-mp.xlabel("Input")
-mp.ylabel("Output")
+y = sigmoid(x)
+y1 = tanhh(x)
+y2 = relu(x)
+
+
+mp.figure(figsize=(15, 10))
+mp.title("Activation Functions", color="red", fontsize=20)
+
+
+mp.subplot(2, 2, 1)
+mp.plot(x, y, color="blue", marker="o", linestyle="--", label="Sigmoid")
+mp.xlabel("Input", fontsize=12)
+mp.ylabel("Output", fontsize=12)
+mp.legend()
 mp.grid()
-mp.show()
 
-# -------- Tanh Plot --------
-mp.figure()
-mp.plot(a, b_tanh, color="green")
-mp.title("Tanh Function")
-mp.xlabel("Input")
-mp.ylabel("Output")
+
+mp.subplot(2, 2, 2)
+mp.plot(x, y1, color="red", marker="o", linestyle="--", label="Hyperbolic Tangent")
+mp.xlabel("Input", fontsize=12)
+mp.ylabel("Output", fontsize=12)
+mp.legend()
 mp.grid()
-mp.show()
 
-# -------- ReLU Plot --------
-mp.figure()
-mp.plot(a, b_relu, color="red")
-mp.title("ReLU Function")
-mp.xlabel("Input")
-mp.ylabel("Output")
+
+mp.subplot(2, 2, 3)
+mp.plot(x, y2, color="orange", marker="o", linestyle="--", label="ReLU")
+mp.xlabel("Input", fontsize=12)
+mp.ylabel("Output", fontsize=12)
+mp.legend()
 mp.grid()
+
+mp.tight_layout()
 mp.show()
-
-
 
