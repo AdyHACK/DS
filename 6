@@ -1,33 +1,75 @@
 import numpy as np
+import numpy.random as ar
 
-# Input patterns
-x1 = np.array([1, 1, 1])
-y1 = np.array([1, 1, -1, -1])
+# Input data (XOR gate)
+X = np.array([
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+])
 
-x2 = np.array([-1, -1, 1])
-y2 = np.array([-1, -1, 1, 1])
+# Expected output
+Y = np.array([
+    [0],
+    [1],
+    [1],
+    [0]
+])
 
-# Weight matrix
-W = np.outer(x1, y1) + np.outer(x2, y2)
+# Learning rate
+lr = 0.5
 
-print("W =\n", W)
+# Random weights
+np.random.seed(0)
 
-print("\n----- FORWARD -----")
-print("x1 =", x1)
-print("x2 =", x2)
+W1 = ar.rand(2,2)   # Input → Hidden
+W2 = ar.rand(2,1)   # Hidden → Output
 
-y1_out = np.sign(np.dot(x1, W))
-y2_out = np.sign(np.dot(x2, W))
+# Sigmoid function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
-print("y1 =", y1_out)
-print("y2 =", y2_out)
+# Derivative of sigmoid
+def sigmoid_d(x):
+    return x * (1 - x)
 
-print("\n----- BACKWARD -----")
-print("y1 =", y1_out)
-print("y2 =", y2_out)
+# Training
+for i in range(3000):
 
-x1_out = np.sign(np.dot(y1_out, W.T))
-x2_out = np.sign(np.dot(y2_out, W.T))
+    # Hidden layer
+    h_input = np.dot(X, W1)
+    h_output = sigmoid(h_input)
 
-print("x1 =", x1_out)
-print("x2 =", x2_out)
+    # Output layer
+    o_input = np.dot(h_output, W2)
+    output = sigmoid(o_input)
+
+    # Error
+    error = Y - output
+
+    # Backpropagation
+    d_output = error * sigmoid_d(output)
+
+    d_hidden = np.dot(d_output, W2.T) * sigmoid_d(h_output)
+
+    # Update weights
+    W2 = W2 + np.dot(h_output.T, d_output) * lr
+
+    W1 = W1 + np.dot(X.T, d_hidden) * lr
+
+# Final output
+print("Final Output:")
+
+final = np.where(output >= 0.5, 1, 0)
+
+print(final)
+
+# Final weights
+print("\nFinal Weights:")
+
+print("W1 =")
+print(W1)
+
+print("\nW2 =")
+print(W2)
