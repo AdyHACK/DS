@@ -1,68 +1,64 @@
 import numpy as np
-X = []
+import numpy.random as ar
 
-for i in range(10):
-    asc = ord(str(i))                
-    bin_val = format(asc, '07b')     
-    X.append([int(bit) for bit in bin_val])
+def inpt():
+    b = []
+    for i in range(10):
+        asc = ord(str(i))              
+        bin_str = format(asc, '07b')   
+        
+        d = [int(bit) for bit in bin_str]
+        b.append(d)
+    
+    return b
 
-X = np.array(X)
+x = inpt()
+print("X =", x)
 
-print("X =\n", X)
+w = ar.rand(7)
 
-W = np.zeros(7)
-print("Initial_Wt =", W)
-
+t = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
 b = 0
-lr = 0.1     
+alpha = 0.1
 
-t = np.array([1 if i % 2 == 0 else 0 for i in range(len(X))])
+for epoch in range(50):
+    errors = 0
 
-print("Target value:", t)
+    for i in range(len(x)):
+        netw = np.dot(w, x[i]) + b
 
-epochs = int(input("\nEnter number of epochs: "))
-
-for epoch in range(epochs):
-
-    print("\nEpoch:", epoch + 1)
-
-    for i in range(len(X)):
-
-        wsum = np.dot(X[i], W) + b
-
-        yin = 1 if wsum >= 0 else 0
+        yin = 1 if netw >= 0 else 0
 
         error = t[i] - yin
         
-        W = W + lr * error * X[i]
+        if error != 0:
+            w = w + alpha * error * np.array(x[i])
+            b = b + alpha * error
+            errors += 1
+    
+    if errors == 0:
+        break
 
-        b = b + lr * error
+print("\nFinal W =", w)
+print("Final b =", b)
 
-        print("wsum:", wsum, ", yin:", yin, ", Error:", error)
-        print("Wnew:", W)
-        print("bnew:", b)
+while True:
 
-print("\nW_Final:", W)
-print("b_Final:", b)
+    a = int(input("\nEnter a number (0-9): "))
 
-def perceptron_predict(X, W, b):
+    asc = ord(str(a))
 
-    predictions = []
+    bin_str = format(asc, '07b')
 
-    for i in range(len(X)):
+    d = [int(bit) for bit in bin_str]
+        
+    netw = np.dot(w, d) + b
 
-        wsum = np.dot(X[i], W) + b
+    yin = 1 if netw >= 0 else 0
+        
+    print("Result:", "Even" if yin == 1 else "Odd")
+        
+    choice = input("Do you want to continue? (y/n): ")
 
-        yin = 1 if wsum >= 0 else 0
-
-        predictions.append(yin)
-
-    return np.array(predictions)
-
-predictions = perceptron_predict(X, W, b)
-
-print("\nPredictions:", predictions)
-
-accuracy = np.mean(predictions == t)
-
-print("\nAccuracy:", accuracy)
+    if choice.lower() != 'y':
+        break
