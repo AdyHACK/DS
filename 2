@@ -1,34 +1,32 @@
-def mcculloc(x1, x2):
-    w1 = 1
-    w2 = -1
+import numpy as np
+
+def mcculloch_pitts(x):
+    # Weights
+    w = np.array([1, -1])
+    # Threshold
     theta = 1
-
     output = []
-
-    for i in range(len(x1)):
-        w = (w1 * x1[i]) + (w2 * x2[i])   
-
-        if w >= theta:
+    # Calculate output
+    for i in range(len(x)):
+        net = np.dot(x[i], w)
+        if net >= theta:
             output.append(1)
         else:
             output.append(0)
-
     return output
+# Input combinations
+x = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+# Get outputs
+output = mcculloch_pitts(x)
 
+# Display result
+print("\nX1  X2  Y")
+print("------------")
 
-n = int(input("Enter number of values: "))
-
-x1 = []
-x2 = []
-
-print("Enter x1 values:")
-for i in range(n):
-    x1.append(int(input()))
-
-print("Enter x2 values:")
-for i in range(n):
-    x2.append(int(input()))
-
-result = mcculloc(x1, x2)
-
-print("Output:", result)
+for i in range(len(x)):
+    print(x[i][0], " ", x[i][1], " ", output[i])
