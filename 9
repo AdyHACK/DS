@@ -1,52 +1,75 @@
 import numpy as np
+import numpy.random as ar
 
-X = np.array([[0, 0],
-              [0, 1],
-              [1, 0],
-              [1, 1]])
+# Input data (XOR gate)
+X = np.array([
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+])
 
-Y = np.array([[0],
-              [1],
-              [1],
-              [0]])
+# Expected output
+Y = np.array([
+    [0],
+    [1],
+    [1],
+    [0]
+])
 
+# Learning rate
+lr = 0.5
 
-lr = 0.1
-epochs = 5000
-
+# Random weights
 np.random.seed(0)
 
-W1 = np.random.rand(2, 2)
-W2 = np.random.rand(2, 1)
-b1 = np.random.rand(1, 2)
-b2 = np.random.rand(1, 1)
+W1 = ar.rand(2,2)   # Input → Hidden
+W2 = ar.rand(2,1)   # Hidden → Output
 
+# Sigmoid function
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-def d_sigmoid(x):
+# Derivative of sigmoid
+def sigmoid_d(x):
     return x * (1 - x)
 
+# Training
+for i in range(3000):
 
-for _ in range(epochs):
+    # Hidden layer
+    h_input = np.dot(X, W1)
+    h_output = sigmoid(h_input)
 
-    h = sigmoid(np.dot(X, W1) + b1)
-    o = sigmoid(np.dot(h, W2) + b2)
+    # Output layer
+    o_input = np.dot(h_output, W2)
+    output = sigmoid(o_input)
 
-    e = Y - o
+    # Error
+    error = Y - output
 
-    d_output = e * d_sigmoid(o)
-    d_hidden = np.dot(d_output, W2.T) * d_sigmoid(h)
+    # Backpropagation
+    d_output = error * sigmoid_d(output)
 
-    W2 += np.dot(h.T, d_output) * lr
-    W1 += np.dot(X.T, d_hidden) * lr
+    d_hidden = np.dot(d_output, W2.T) * sigmoid_d(h_output)
 
-    b2 += np.sum(d_output, axis=0) * lr
-    b1 += np.sum(d_hidden, axis=0) * lr
+    # Update weights
+    W2 = W2 + np.dot(h_output.T, d_output) * lr
 
-h_test = sigmoid(np.dot(X, W1) + b1)
-o_test = sigmoid(np.dot(h_test, W2) + b2)
+    W1 = W1 + np.dot(X.T, d_hidden) * lr
 
-pred = (o_test > 0.5).astype(int)
+# Final output
+print("Final Output:")
 
-print("Predictions:\n", pred)
+final = np.where(output >= 0.5, 1, 0)
+
+print(final)
+
+# Final weights
+print("\nFinal Weights:")
+
+print("W1 =")
+print(W1)
+
+print("\nW2 =")
+print(W2)
