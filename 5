@@ -1,6 +1,6 @@
 import numpy as np
 
-# Input patterns
+# Input and output patterns
 x1 = np.array([1, 1, 1])
 y1 = np.array([1, 1, -1, -1])
 
@@ -8,26 +8,41 @@ x2 = np.array([-1, -1, 1])
 y2 = np.array([-1, -1, 1, 1])
 
 # Weight matrix
-W = np.outer(x1, y1) + np.outer(x2, y2)
+W1 = np.outer(x1, y1) + np.outer(x2, y2)
 
-print("W =\n", W)
+print("Weight Matrix:")
+print(W1)
 
-print("\n----- FORWARD -----")
-print("x1 =", x1)
-print("x2 =", x2)
+print("\n---------- FORWARD CALL ----------")
 
-y1_out = np.sign(np.dot(x1, W))
-y2_out = np.sign(np.dot(x2, W))
+print("INPUT:")
+print("Original x1 =", x1)
+print("Original x2 =", x2)
 
+print("\nOUTPUT:")
+
+# Forward recall using np.where()
+y1_net = np.dot(x1, W1)
+y1_out = np.where(y1_net >= 0, 1, -1)
 print("y1 =", y1_out)
+
+y2_net = np.dot(x2, W1)
+y2_out = np.where(y2_net >= 0, 1, -1)
 print("y2 =", y2_out)
 
-print("\n----- BACKWARD -----")
-print("y1 =", y1_out)
-print("y2 =", y2_out)
+print("\n---------- BACKWARD CALL ----------")
 
-x1_out = np.sign(np.dot(y1_out, W.T))
-x2_out = np.sign(np.dot(y2_out, W.T))
+print("INPUT:")
+print("Original y1 =", y1_out)
+print("Original y2 =", y2_out)
 
+print("\nOUTPUT:")
+
+# Backward recall using np.where()
+x1_net = np.dot(y1_out, W1.T)
+x1_out = np.where(x1_net >= 0, 1, -1)
 print("x1 =", x1_out)
+
+x2_net = np.dot(y2_out, W1.T)
+x2_out = np.where(x2_net >= 0, 1, -1)
 print("x2 =", x2_out)
