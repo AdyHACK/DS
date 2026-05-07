@@ -1,3 +1,5 @@
+# Hopfield
+
 import numpy as np
 
 # Training patterns
