@@ -1,37 +1,85 @@
 import numpy as np
-X = np.array([
-    [1, 1, 0, 0],
-    [1, 0, 0, 0],
-    [0, 0, 1, 1],
-    [0, 0, 1, 0]
-])
 
-rho = 0.6
-clusters = []
+# Input patterns
+patterns = [
+    np.array([1, 1, 0, 0]),
+    np.array([1, 1, 0, 1]),
+    np.array([0, 0, 1, 1]),
+    np.array([0, 0, 1, 0])
+]
 
-for x in X:
-    print("Input:", x)
-    flag = 0
+# Vigilance parameter
+vigilance = 0.6
 
-    for i in range(len(clusters)):
-        c = clusters[i]
+# Weight vectors
+w = []
 
-        match = np.sum(np.minimum(x, c)) / np.sum(x)
+# Cluster list
+cluster = []
 
-        if match >= rho:
-            clusters[i] = np.minimum(x, c)
-            print("Updated Cluster", i, ":", clusters[i])
-            flag = 1
+# Match function
+def match(x, w):
+    y = np.dot(x, w)
+    return np.sum(y) / np.sum(x)
+
+# ART1 Clustering
+for p in patterns:
+
+    found = 0
+
+    # First pattern case
+    if len(w) == 0:
+
+        print("-------------------------------------")
+        print("Match = 1.0 (First Pattern)")
+
+        w.append(p.copy())
+        cluster.append([p])
+
+        print("Weight =", p.tolist())
+        print(p.tolist(), "-> New Cluster 0")
+
+        continue
+
+    # Compare with existing clusters
+    for i in range(len(w)):
+
+        m = match(p, w[i])
+
+        print("-------------------------------------")
+        print("Match =", m)
+
+        if m >= vigilance:
+
+            print(p.tolist(), "-> Same Cluster", i)
+
+            # Update weight
+            w[i] = np.minimum(w[i], p)
+
+            print("Updated Weight =", w[i].tolist())
+
+            cluster[i].append(p)
+
+            found = 1
             break
 
-    if flag == 0:
-        clusters.append(x.copy())
-        print("New Cluster", len(clusters) - 1, ":", x)
+    # Create new cluster
+    if found == 0:
 
-    print()
+        w.append(p.copy())
+        cluster.append([p])
 
+        print(p.tolist(), "-> New Cluster", len(w)-1)
+        print("Weight =", p.tolist())
+
+# Final clusters
+print("\n****************************")
 print("Final Clusters:")
-for i in range(len(clusters)):
-    print(i, ":", clusters[i])
 
-print("Number of clusters:", len(clusters))
+for i in range(len(cluster)):
+
+    print("-------------------------------------")
+    print("Cluster", i, ":")
+
+    for p in cluster[i]:
+        print(p.tolist())
